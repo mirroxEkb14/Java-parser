@@ -5,9 +5,14 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.util.Scanner;
+
+/*
+
+ */
 
 public class SqlParser {
     public static final String URL = "https://www.sql.ru/forum/job-offers"; // url constant
@@ -52,23 +57,23 @@ public class SqlParser {
         boolean isCorrect = false;
 
         String[] inputArray = input.split(",");
-        if (inputArray.length == 3) {
-            isCorrect = true;
-
-        } else if (inputArray.length != 3) {
+        if (inputArray.length != 3) {
             System.out.println("\nNeeded format: url, key word, period(months) - with ','");
             isCorrect = false;
 
-        } else if (!inputArray[0].toLowerCase().equals(String.valueOf(URL.charAt(12) + URL.charAt(13) + URL.charAt(14) + URL.charAt(15) + URL.charAt(16) + URL.charAt(17)))) {
-            System.out.println("\nWrong url\nExapmle: sql.ru");
+        } else if (!inputArray[0].toLowerCase().equals("sql") || !inputArray[0].toLowerCase().equals("sql.ru")) {
+            System.out.println("\nWrong url\nExample: sql.ru");
             isCorrect = false;
 
         } else if (Integer.parseInt(inputArray[3]) > 12) {
             System.out.println("\nPeriod must be in months");
             isCorrect = false;
+
+        } else if (inputArray.length == 3) {
+            isCorrect = true;
+
         }
 
-        System.out.println(inputArray[0].toLowerCase());
         return isCorrect;
     }
 }
