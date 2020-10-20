@@ -62,6 +62,7 @@ public class SqlParser {
                     isCorrect = false;
                 }
                 inputMonths = Integer.parseInt(inputArray[2]);
+
             } catch (NumberFormatException e) { // if there are two keyword
                 if (Integer.parseInt(inputArray[3]) > 12 || Integer.parseInt(inputArray[3]) < 1) {
                     System.out.println("\nPeriod must be in months");
@@ -173,100 +174,3 @@ public class SqlParser {
         }
     }
 }
-
-
-//        try {
-//                input = input.replaceAll(" ", ""); // from 'input' we need key word and period
-//                String[] inputArray = input.split(",");
-//
-//                Calendar calendar = Calendar.getInstance();
-//                SimpleDateFormat sdf = new SimpleDateFormat("MMM");
-//
-//                File file = new File("C:/Users/Daniyar/Desktop/sqlru.txt"); // our text file
-//                PrintWriter pw = new PrintWriter(file);
-//
-//                listOfMonths(); // create a list of month names
-//
-//                int monthCounter = 0; // when the month changes
-//                int pageCounter = 1; // when the page changes
-//                while (monthCounter != Integer.parseInt(inputArray[2])) {
-//                    Document doc = Jsoup.connect(URL + "/" + pageCounter).get(); // connect to the page
-//
-//                    Elements tbodyElements = doc.getElementsByTag("tbody"); // find all 'tbody' tags that contain the date
-//
-//                    Elements tdElements = doc.getElementsByAttributeValue("class", "postslisttopic"); // now 'tdElements' has all vacancies on the page
-//
-//                    int vacancyCounter = 4; // the first 4 rows in the table on the site are not vacancies, so we start with 4th row
-//                    int counter = 0; // skip the first 4 rows in the table (they are not vacancies)
-//                    for (Element tdElement: tdElements) { // take each row(vacancy) in the table on the site
-//                        if (vacancyCounter < tbodyElements.get(2).childrenSize()) { // 'tbodyElements.get(2).childrenSize()' - the number of vacancies except the first 4 rows
-//                            String[] vacancyDate = tbodyElements.get(2).child(vacancyCounter).child(5).text().split(" ");
-//
-//                            if (counter < 3) { // skip the first 4 rows
-//                            counter++;
-//                            } else {
-//                            // verification: if we get the next month
-//                                if (!vacancyDate[0].equals("сегодня,") && !vacancyDate[0].equals("вчера,") && !vacancyDate[1].equals(months.get(sdf.format(calendar.getTime())))) {
-//                                    monthCounter++;
-//                                    calendar.add(Calendar.MONTH, -1);
-//
-//                            // when the last month the user wants ends: break
-//                                if (monthCounter == Integer.parseInt(inputArray[2])) {
-//                                break;
-//                                }
-//                            }
-//
-//                            String[] words = tdElement.text().split(" "); // find a vacancy by keyword
-//                            for (String word: words) {
-//                                if (word.equalsIgnoreCase(inputArray[1])) {
-//                                    if (!file.exists()) { // if the file does not exist
-//                                        new FileWriter(file);
-//                                    }
-//
-//                                    // write to file
-//                                    pw.println(tdElement.child(0).attr("href")); // link
-//                                    pw.println(tdElement.child(0).text()); // title
-//                                    pw.println(tbodyElements.get(2).child(vacancyCounter).child(5).text() + "\n"); // date
-//                                }
-//                            }
-//                            vacancyCounter++;
-//                            }
-//                        }
-//                    }
-//                pageCounter++;
-//                }
-//                pw.close();
-//                System.out.println("\nAll the vacancies have been written to the file");
-//
-//        } catch (IOException e) {
-//        System.out.println("\nSome input-output Exception: " + e.getMessage());
-//        }
-
-// verification: if we get the next month
-//                                    if (!vacancyDate[0].equals("сегодня,") && !vacancyDate[0].equals("вчера,") && !vacancyDate[1].equals(months.get(sdf.format(calendar.getTime())))) {
-//                                        monthCounter++; // when the vacancies ran out this month
-//                                        if (inputMonths != 1) {
-//                                            calendar.add(Calendar.MONTH, -1); // set the previous month from the current
-//                                        }
-//
-//                                        // when the last month the user wants ends: break
-////                                        try { // 'try-catch' blocks are necessary because we do not know in advance if the user enters two or one keyword
-////                                            if (monthCounter == Integer.parseInt(inputArray[2])) {
-////                                                break;
-////                                            }
-////                                        } catch (NumberFormatException e) {
-////                                            if (monthCounter == Integer.parseInt(inputArray[3])) {
-////                                                break;
-////                                            }
-////                                        }
-//                                    }
-
-//                            try { // 'try-catch' blocks are necessary because we do not know in advance if the user enters two or one keyword
-//                                if (monthCounter == Integer.parseInt(inputArray[2])) {
-//                                    break;
-//                                }
-//                            } catch (NumberFormatException e) {
-//                                if (monthCounter == Integer.parseInt(inputArray[3])) {
-//                                    break;
-//                                }
-//                            }
