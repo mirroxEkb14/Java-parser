@@ -78,7 +78,7 @@ public class SqlParser {
         try {
             System.out.println("\nreceiving data...");
 
-            input = input.replaceAll(" ", ""); // from 'input' we need key word and period
+            input = input.replaceAll(" ", ""); // from 'input' we need keyword(s) and period
             String[] inputArray = input.split(",");
 
             Calendar calendar = Calendar.getInstance(); // to get the current month and then the previous ones
@@ -89,6 +89,8 @@ public class SqlParser {
 
             listOfMonths(); // create a list of month names
 
+            Scanner scanner = new Scanner(file); // in case there`ll be no vacancies in the file
+
             int monthCounter = 0; // when the month changes
             int pageCounter = 1; // when the page changes
 
@@ -96,8 +98,10 @@ public class SqlParser {
                 the vacancies on the site are not in order of dates, so I decided that for each month we`ll look through two pages:
                 for the current month - the first 2 pages
                 for the previous month - the first 4 pages etc.
+
+                Bad logic but I haven`t come up with a better one yet
              */
-            int pageCeil = 3;
+            int pageCeil = 3; // the page ceiling for each month
             while (monthCounter != inputMonths) {
                 Document doc = Jsoup.connect(URL + "/" + pageCounter).get(); // connect to the page
 
@@ -106,18 +110,18 @@ public class SqlParser {
                 Elements tdElements = doc.getElementsByAttributeValue("class", "postslisttopic"); // now 'tdElements' has all vacancies on the page
 
                 int vacancyCounter = 4; // the first 4 rows in the table on the site are not vacancies, so we start with 5th row
-                int skipCounter = 0; // skip the first 4 rows in the table (these are not vacancies)
+                int skipCounter = 0; // skip the first 3 rows in the table (these are not vacancies)
                 for (Element tdElement: tdElements) { // take each row(vacancy) in the table on the site
-                    if (vacancyCounter < tbodyElements.get(2).childrenSize()) { // 'tbodyElements.get(2).childrenSize()' - the number of vacancies except the first 4 rows
-                        if (skipCounter < 3) { // skip the first 4 rows
+                    if (vacancyCounter < tbodyElements.get(2).childrenSize()) { // 'tbodyElements.get(2).childrenSize()' - the number of vacancies on the page
+                        if (skipCounter < 3) { // skip the first 3 rows
                             skipCounter++;
                         } else {
-                            String[] words = tdElement.text().replaceAll("[^a-zA-Zа-яА-Я ]", " ").split(" "); // find a vacancy by keyword
+                            String[] words = tdElement.text().replaceAll("[^a-zA-Zа-яА-Я ]", " ").split(" "); // find a vacancy by keyword(s)
                             for (String word: words) {
                                 if (word.equalsIgnoreCase(inputArray[1]) || word.equalsIgnoreCase(inputArray[2])) {
                                     Document dateDoc = Jsoup.connect(tdElement.child(0).attr("href")).get(); // connect to vacancy page
 
-                                    Elements dateTdElements = dateDoc.getElementsByAttributeValue("class", "msgFooter"); // get date
+                                    Elements dateTdElements = dateDoc.getElementsByAttributeValue("class", "msgFooter"); // get vacancy posting date
                                     String[] vacancyDate = dateTdElements.text().split(" ");
 
                                     if (pageCounter >= pageCeil) { // if we reach the ceil
@@ -130,7 +134,6 @@ public class SqlParser {
                                         if (!file.exists()) { // if the file does not exist
                                             new FileWriter(file);
                                         }
-
                                         // write to the file
                                         pw.println(tdElement.child(0).attr("href")); // link
                                         pw.println(tdElement.child(0).text()); // title
@@ -147,8 +150,13 @@ public class SqlParser {
                 }
                 pageCounter++;
             }
+            // checking if the file is empty
+            if (scanner.hasNext()) {
+                System.out.println("\nAll the vacancies have been written to the file");
+            } else {
+                System.out.println("\nThere are no vacancies with such keywords during this period");
+            }
             pw.close();
-            System.out.println("\nAll the vacancies have been written to the file");
 
         } catch (IOException e) {
             System.out.println("\nSome input-output Exception: " + e.getMessage());
@@ -166,11 +174,11 @@ public class SqlParser {
          */
         months = new HashMap<>();
 
-        String[] monthNumbersInCalendar = {"янв.", "февр.", "март", "апр.", "май", "июнь", "июль", "авг.", "сент.", "окт.", "нояб.", "дек."};
+        String[] monthNamesInCalendar = {"янв.", "февр.", "март", "апр.", "май", "июнь", "июль", "авг.", "сент.", "окт.", "нояб.", "дек."};
         String[] monthNamesOnSite = {"янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"};
 
         for (int i = 0; i < 12; i++) {
-            months.put(monthNumbersInCalendar[i], monthNamesOnSite[i]);
+            months.put(monthNamesInCalendar[i], monthNamesOnSite[i]);
         }
     }
 }
