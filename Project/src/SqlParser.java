@@ -64,11 +64,16 @@ public class SqlParser {
                 inputMonths = Integer.parseInt(inputArray[2]);
 
             } catch (NumberFormatException e) { // if there are two keyword
-                if (Integer.parseInt(inputArray[3]) > 12 || Integer.parseInt(inputArray[3]) < 1) {
+                try {
+                    if (Integer.parseInt(inputArray[3]) > 12 || Integer.parseInt(inputArray[3]) < 1) {
+                        System.out.println("\nPeriod must be in months");
+                        isCorrect = false;
+                        inputMonths = Integer.parseInt(inputArray[3]);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e2) {
                     System.out.println("\nPeriod must be in months");
                     isCorrect = false;
                 }
-                inputMonths = Integer.parseInt(inputArray[3]);
             }
         }
         return isCorrect;
@@ -87,9 +92,9 @@ public class SqlParser {
             File file = new File("C:/Users/Daniyar/Desktop/sqlru.txt"); // our text file
             PrintWriter pw = new PrintWriter(file);
 
-            listOfMonths(); // create a list of month names
-
             Scanner scanner = new Scanner(file); // in case there`ll be no vacancies in the file
+
+            listOfMonths(); // create a list of month names
 
             int monthCounter = 0; // when the month changes
             int pageCounter = 1; // when the page changes
@@ -157,6 +162,7 @@ public class SqlParser {
                 System.out.println("\nThere are no vacancies with such keywords during this period");
             }
             pw.close();
+            scanner.close();
 
         } catch (IOException e) {
             System.out.println("\nSome input-output Exception: " + e.getMessage());
