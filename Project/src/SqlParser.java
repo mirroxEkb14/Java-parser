@@ -3,7 +3,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.Scanner;
 
 import java.util.Map;
@@ -15,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.io.IOException;
 
 
 public class SqlParser {
@@ -68,8 +68,9 @@ public class SqlParser {
                     if (Integer.parseInt(inputArray[3]) > 12 || Integer.parseInt(inputArray[3]) < 1) {
                         System.out.println("\nPeriod must be in months");
                         isCorrect = false;
-                        inputMonths = Integer.parseInt(inputArray[3]);
                     }
+                    inputMonths = Integer.parseInt(inputArray[3]);
+
                 } catch (ArrayIndexOutOfBoundsException e2) {
                     System.out.println("\nPeriod must be in months");
                     isCorrect = false;
@@ -91,8 +92,6 @@ public class SqlParser {
 
             File file = new File("C:/Users/Daniyar/Desktop/sqlru.txt"); // our text file
             PrintWriter pw = new PrintWriter(file);
-
-            Scanner scanner = new Scanner(file); // in case there`ll be no vacancies in the file
 
             listOfMonths(); // create a list of month names
 
@@ -136,9 +135,6 @@ public class SqlParser {
                                         pageCounter = 1; // reset 'pageCounter' because every new month we check from the first page
                                         break;
                                     } else if (vacancyDate[0].equals("сегодня,") || vacancyDate[0].equals("вчера,") || vacancyDate[1].equals(months.get(sdf.format(calendar.getTime())))) {
-                                        if (!file.exists()) { // if the file does not exist
-                                            new FileWriter(file);
-                                        }
                                         // write to the file
                                         pw.println(tdElement.child(0).attr("href")); // link
                                         pw.println(tdElement.child(0).text()); // title
@@ -155,14 +151,14 @@ public class SqlParser {
                 }
                 pageCounter++;
             }
+            pw.close();
+
             // checking if the file is empty
-            if (scanner.hasNext()) {
+            if (file.length() != 0) {
                 System.out.println("\nAll the vacancies have been written to the file");
             } else {
                 System.out.println("\nThere are no vacancies with such keywords during this period");
             }
-            pw.close();
-            scanner.close();
 
         } catch (IOException e) {
             System.out.println("\nSome input-output Exception: " + e.getMessage());
