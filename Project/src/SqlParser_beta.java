@@ -12,12 +12,11 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
 
 
-public class SqlParser {
+public class SqlParser_beta {
     public static final String URL = "https://www.sql.ru/forum/job-offers"; // url constant
     public static Map<String, String> months; // month names
     public static int inputMonths; // the number of months the user entered
